@@ -32,15 +32,15 @@ jobs:
     - uses: ros-tooling/setup-ros@0.0.12
       with:
         required-ros-distributions: melodic
-      id: setup-ros
 
     - uses: ./
+      id: action-ros
       name: "Build and run tests for a single package (Melodic)"
       with:
         vcs-repo-file-url: .github/workflows/ros_tutorials.repos
         package-name: roscpp_tutorials
         source-ros-binary-installation: melodic
-    - run: test -d ${{ steps.setup-ros.outputs.ros-workspace-directory-name }}/install/roscpp_tutorials
+    - run: test -d ${{ steps.action-ros.outputs.ros-workspace-directory-name }}/install/roscpp_tutorials
       name: "Check that roscpp_tutorials install directory is present"
 
   test_ros_docker_kinetic:
@@ -60,7 +60,6 @@ jobs:
     - uses: ros-tooling/setup-ros@0.0.12
       with:
         required-ros-distributions: kinetic
-      id: setup-ros
 
     - uses: ./
       name: "Build and run tests for a single package (Kinetic)"
@@ -88,7 +87,6 @@ jobs:
     - uses: ros-tooling/setup-ros@0.0.12
       with:
         required-ros-distributions: melodic
-      id: setup-ros
 
     - uses: ./
       name: "Build and run tests for a single package (Kinetic)"
@@ -116,7 +114,6 @@ jobs:
     - run: npm run build
 
     - uses: ros-tooling/setup-ros@0.0.12
-      id: setup-ros
 
     - uses: ./
       name: "Test single package, default options"
@@ -200,7 +197,6 @@ jobs:
     - uses: ros-tooling/setup-ros@0.0.12
       with:
         required-ros-distributions: dashing
-      id: setup-ros
 
     - uses: ./
       name: "Test single package, default options"
