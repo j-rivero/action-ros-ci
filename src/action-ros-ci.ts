@@ -95,7 +95,6 @@ async function run() {
 		const vcsRepoFileUrl = resolveVcsRepoFileUrl(
 			core.getInput("vcs-repo-file-url", { required: true })
 		);
-		const coverageIgnorePattern = core.getInput("coverage-ignore-pattern");
 
 		let commandPrefix = "";
 		if (sourceRosBinaryInstallation) {
@@ -231,9 +230,9 @@ async function run() {
 
 		// ignoreReturnCode is set to true to avoid having a lack of coverage
 		// data fail the build.
-		const colconLcovResultCmd = `colcon lcov-result \
-	             --filter ${coverageIgnorePattern} \
-	             --packages-select ${packageNameList.join(" ")}`;
+		const colconLcovResultCmd = `colcon lcov-result --filter */test/* --packages-select ${packageNameList.join(
+			" "
+		)}`;
 		await execBashCommand(colconLcovResultCmd, commandPrefix, {
 			cwd: rosWorkspaceDir,
 			ignoreReturnCode: true
