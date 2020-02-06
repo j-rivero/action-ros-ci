@@ -4618,7 +4618,7 @@ function run() {
             yield execBashCommand(colconTestCmd, commandPrefix, options);
             // ignoreReturnCode is set to true to avoid having a lack of coverage
             // data fail the build.
-            const colconLcovResultCmd = `colcon lcov-result --filter */test/* --packages-select ${packageNameList.join(" ")}`;
+            const colconLcovResultCmd = `colcon lcov-result --filter */test/* */build/* --packages-select ${packageNameList.join(" ")}`;
             yield execBashCommand(colconLcovResultCmd, commandPrefix, {
                 cwd: rosWorkspaceDir,
                 ignoreReturnCode: true
