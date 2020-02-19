@@ -97,6 +97,7 @@ async function run() {
 			core.getInput("vcs-repo-file-url", { required: true })
 		);
 		const coverageIgnorePattern = core.getInput("coverage-ignore-pattern");
+		const coverageConfigFile = core.getInput("coverage-config-file");
 
 		let commandPrefix = "";
 		if (sourceRosBinaryInstallation) {
@@ -202,6 +203,14 @@ async function run() {
 			extra_options = extra_options.concat(["--mixin", colconMixinName]);
 		}
 
+		let lcov_extra_options: string[] = [];
+		if (coverageIgnorePattern != "") {
+			lcov_extra_options = lcov_extra_options.concat(["--filter ", coverageIgnorePattern]);
+		}
+		if (coverageConfigFile != "") {
+			lcov_extra_options = lcov_extra_options.concat(["--lcov-config-file'", coverageConfigFile]);
+		}
+
 		// Add the future install bin directory to PATH.
 		// This enables cmake find_package to find packages installed in the
 		// colcon install directory, even if local_setup.sh has not been sourced.
@@ -223,7 +232,8 @@ async function run() {
 			--cmake-args ${extraCmakeArgs}`;
 		await execBashCommand(colconBuildCmd, commandPrefix, options);
 
-		const colconLcovInitialCmd = `colcon lcov-result --initial`
+		const colconLcovInitialCmd = `colcon lcov-result --initial \
+		     ${lcov_extra_options.join(" ")}`;
 		await execBashCommand(colconLcovInitialCmd, commandPrefix, options);
 
 		const colconTestCmd = `colcon test --event-handlers console_cohesion+ \
@@ -235,8 +245,8 @@ async function run() {
 		// ignoreReturnCode is set to true to avoid having a lack of coverage
 		// data fail the build.
 		const colconLcovResultCmd = `colcon lcov-result \
-	             --filter ${coverageIgnorePattern} \
-	             --packages-select ${packageNameList.join(" ")}`;
+	             --packages-select ${packageNameList.join(" ")} \
+		     ${lcov_extra_options.join(" ")}`;
 		await execBashCommand(colconLcovResultCmd, commandPrefix, {
 			cwd: rosWorkspaceDir,
 			ignoreReturnCode: true
