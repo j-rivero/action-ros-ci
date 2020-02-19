@@ -223,8 +223,13 @@ async function run() {
 			--cmake-args ${extraCmakeArgs}`;
 		await execBashCommand(colconBuildCmd, commandPrefix, options);
 
+		// ignoreReturnCode is set to true to avoid having a lack of coverage
+		// data fail the build.
 		const colconLcovInitialCmd = `colcon lcov-result --initial`
-		await execBashCommand(colconLcovInitialCmd, commandPrefix, options);
+		await execBashCommand(colconLcovInitialCmd, commandPrefix, {
+			cwd: rosWorkspaceDir,
+			ignoreReturnCode: true
+		});
 
 		const colconTestCmd = `colcon test --event-handlers console_cohesion+ \
 			--pytest-args --cov=. --cov-report=xml --return-code-on-test-failure \
@@ -232,8 +237,7 @@ async function run() {
 			${extra_options.join(" ")}`;
 		await execBashCommand(colconTestCmd, commandPrefix, options);
 
-		// ignoreReturnCode is set to true to avoid having a lack of coverage
-		// data fail the build.
+		// ignoreReturnCode, check comment above in --initial
 		const colconLcovResultCmd = `colcon lcov-result \
 	             --filter ${coverageIgnorePattern} \
 	             --packages-select ${packageNameList.join(" ")}`;
