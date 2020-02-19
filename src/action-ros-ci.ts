@@ -221,8 +221,10 @@ async function run() {
 			--packages-up-to ${packageNameList.join(" ")} \
 			${extra_options.join(" ")} \
 			--cmake-args ${extraCmakeArgs}`;
-
 		await execBashCommand(colconBuildCmd, commandPrefix, options);
+
+		const colconLcovInitialCmd = `colcon lcov-result --initial`
+		await execBashCommand(colconLcovInitialCmd, commandPrefix, options);
 
 		const colconTestCmd = `colcon test --event-handlers console_cohesion+ \
 			--pytest-args --cov=. --cov-report=xml --return-code-on-test-failure \
