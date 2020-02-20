@@ -4596,11 +4596,8 @@ function run() {
                 extra_options = extra_options.concat(["--mixin", colconMixinName]);
             }
             let lcov_extra_options = [];
-            if (coverageIgnorePattern != "") {
-                lcov_extra_options = lcov_extra_options.concat(["--filter ", coverageIgnorePattern]);
-            }
             if (coverageConfigFile != "") {
-                lcov_extra_options = lcov_extra_options.concat(["--lcov-config-file'", coverageConfigFile]);
+                lcov_extra_options = lcov_extra_options.concat(["--lcov-config-file", coverageConfigFile]);
             }
             // Add the future install bin directory to PATH.
             // This enables cmake find_package to find packages installed in the
@@ -4634,6 +4631,9 @@ function run() {
 			--packages-select ${packageNameList.join(" ")} \
 			${extra_options.join(" ")}`;
             yield execBashCommand(colconTestCmd, commandPrefix, options);
+            if (coverageIgnorePattern != "") {
+                lcov_extra_options = lcov_extra_options.concat(["--filter", coverageIgnorePattern]);
+            }
             // ignoreReturnCode, check comment above in --initial
             const colconLcovResultCmd = `colcon lcov-result \
 	             --packages-select ${packageNameList.join(" ")} \

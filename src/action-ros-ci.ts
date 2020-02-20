@@ -204,11 +204,8 @@ async function run() {
 		}
 
 		let lcov_extra_options: string[] = [];
-		if (coverageIgnorePattern != "") {
-			lcov_extra_options = lcov_extra_options.concat(["--filter ", coverageIgnorePattern]);
-		}
 		if (coverageConfigFile != "") {
-			lcov_extra_options = lcov_extra_options.concat(["--lcov-config-file'", coverageConfigFile]);
+			lcov_extra_options = lcov_extra_options.concat(["--lcov-config-file", coverageConfigFile]);
 		}
 
 		// Add the future install bin directory to PATH.
@@ -246,6 +243,10 @@ async function run() {
 			--packages-select ${packageNameList.join(" ")} \
 			${extra_options.join(" ")}`;
 		await execBashCommand(colconTestCmd, commandPrefix, options);
+
+		if (coverageIgnorePattern != "") {
+			lcov_extra_options = lcov_extra_options.concat(["--filter", coverageIgnorePattern]);
+		}
 
 		// ignoreReturnCode, check comment above in --initial
 		const colconLcovResultCmd = `colcon lcov-result \
